@@ -86,5 +86,9 @@
 #define MICROPY_HW_USB_FS           (1)
 
 // Bluetooth config
+// in .mk file:
+//#define MICROPY_BLUETOOTH_NIMBLE     (1)
+//#define MICROPY_PY_BLUETOOTH         (1)
 #define MICROPY_HW_BLE_UART_ID       (0)
 #define MICROPY_HW_BLE_UART_BAUDRATE (115200)
+#define MICROPY_PY_BLUETOOTH_DEFAULT_GAP_NAME "AEPYM"

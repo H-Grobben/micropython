@@ -66,9 +66,10 @@
 
 #define CAN1_RX0_IRQn               FDCAN1_IT0_IRQn
 #define CAN1_RX1_IRQn               FDCAN1_IT1_IRQn
+#if defined(CAN2)
 #define CAN2_RX0_IRQn               FDCAN2_IT0_IRQn
 #define CAN2_RX1_IRQn               FDCAN2_IT1_IRQn
-
+#endif
 #define CAN_IT_FIFO0_FULL           FDCAN_IT_RX_FIFO0_FULL
 #define CAN_IT_FIFO1_FULL           FDCAN_IT_RX_FIFO1_FULL
 #define CAN_IT_FIFO0_OVRF           FDCAN_IT_RX_FIFO0_MESSAGE_LOST

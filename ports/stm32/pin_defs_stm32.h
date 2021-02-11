@@ -129,7 +129,9 @@ enum {
 #if defined(STM32G4)
 // Make G4 FDCAN more like CAN
 #define CAN1 FDCAN1
+#if defined(FDCAN2)
 #define CAN2 FDCAN2
+#endif
 #define GPIO_AF9_CAN1 GPIO_AF9_FDCAN1
 #define GPIO_AF9_CAN2 GPIO_AF9_FDCAN2
 #endif
