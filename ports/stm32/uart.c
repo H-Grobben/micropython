@@ -649,7 +649,7 @@ void uart_attach_to_repl(pyb_uart_obj_t *self, bool attached) {
     self->attached_to_repl = attached;
 }
 
-uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
+uint32_t uart_get_source_freq(pyb_uart_obj_t *self) {
     uint32_t uart_clk = 0;
 
     #if defined(STM32F0)
@@ -714,10 +714,14 @@ uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
         ) {
         uart_clk = HAL_RCC_GetPCLK2Freq();
     } else {
-        uart_clk = HAL_RCC_GetPCLK1Freq();
+        uart_clk = HAL_RCC_GetPCLK1Freq(); // also LPUART
     }
     #endif
 
+    return uart_clk;
+}
+
+uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
     // This formula assumes UART_OVERSAMPLING_16
     uint32_t baudrate;
     #if defined(LPUART1)
@@ -726,11 +730,32 @@ uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
     if (0)
     #endif
     {
-        baudrate = uart_clk / (self->uartx->BRR >> 8);
+        baudrate = uart_get_source_freq(self) / (self->uartx->BRR >> 8);
     } else {
-        baudrate = uart_clk / self->uartx->BRR;
+        baudrate = uart_get_source_freq(self) / self->uartx->BRR;
     }
     return baudrate;
+}
+
+void uart_set_baudrate(pyb_uart_obj_t *self, uint32_t baudrate) {
+    #if defined(LPUART1)
+    if (self->uart_id == PYB_LPUART_1)
+    {
+        LL_LPUART_SetBaudRate(self->uartx, uart_get_source_freq(self),
+            #if defined(STM32H7) || defined(STM32WB) || defined(STM32G4)
+            LL_USART_PRESCALER_DIV1,
+            #endif
+            baudrate);
+    } else {
+    #else
+    if (1) {
+    #endif
+        LL_USART_SetBaudRate(self->uartx, uart_get_source_freq(self),
+            #if defined(STM32H7) || defined(STM32WB) || defined(STM32G4)
+            LL_USART_PRESCALER_DIV1,
+            #endif
+            LL_USART_OVERSAMPLING_16, baudrate);
+    }
 }
 
 mp_uint_t uart_rx_any(pyb_uart_obj_t *self) {
