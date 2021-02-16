@@ -739,8 +739,7 @@ uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
 
 void uart_set_baudrate(pyb_uart_obj_t *self, uint32_t baudrate) {
     #if defined(LPUART1)
-    if (self->uart_id == PYB_LPUART_1)
-    {
+    if (self->uart_id == PYB_LPUART_1) {
         LL_LPUART_SetBaudRate(self->uartx, uart_get_source_freq(self),
             #if defined(STM32H7) || defined(STM32WB) || defined(STM32G4)
             LL_USART_PRESCALER_DIV1,
