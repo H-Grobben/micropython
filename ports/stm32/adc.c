@@ -136,7 +136,7 @@
 
 #endif
 
-#if defined(STM32F091xC)
+#if defined(STM32F091xC) || defined(STM32F078xx)
 #define VBAT_DIV (2)
 #elif defined(STM32F405xx) || defined(STM32F415xx) || \
     defined(STM32F407xx) || defined(STM32F417xx) || \
