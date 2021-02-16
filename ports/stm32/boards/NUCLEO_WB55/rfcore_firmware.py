@@ -177,8 +177,8 @@ _PATH_WS_BLE_HCI = "ws_ble_hci.bin"
 # Note any address from the end of the filesystem to the SFSA would be fine, but if
 # the FUS is fixed in the future to use the specified address then these are the "correct"
 # ones.
-_ADDR_FUS = 0x080EC000          # FUS fw v1.1.2 01/15/2021
-_ADDR_WS_BLE_HCI = 0x080E0000   # BLE v1.10.0 10/26/2020
+_ADDR_FUS = 0x080EC000  # FUS fw v1.1.2 01/15/2021
+_ADDR_WS_BLE_HCI = 0x080E0000  # BLE v1.10.0 10/26/2020
 
 # When installing the FUS/WS it can take a long time to return to the first
 # GET_STATE HCI command.
