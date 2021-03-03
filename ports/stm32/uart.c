@@ -226,6 +226,7 @@ bool uart_init(pyb_uart_obj_t *uart_obj,
     uint32_t baudrate, uint32_t bits, uint32_t parity, uint32_t stop, uint32_t flow) {
     USART_TypeDef *UARTx;
     IRQn_Type irqn;
+    uint8_t uart_fn = AF_FN_UART;
     int uart_unit;
 
     const pin_obj_t *pins[4] = {0};
@@ -423,7 +424,8 @@ bool uart_init(pyb_uart_obj_t *uart_obj,
 
         #if defined(MICROPY_HW_LPUART1_TX) && defined(MICROPY_HW_LPUART1_RX)
         case PYB_LPUART_1:
-            uart_unit = PYB_LPUART_1;
+            uart_fn = AF_FN_LPUART;
+            uart_unit = 1;
             UARTx = LPUART1;
             irqn = LPUART1_IRQn;
             pins[0] = MICROPY_HW_LPUART1_TX;
@@ -452,7 +454,7 @@ bool uart_init(pyb_uart_obj_t *uart_obj,
 
     for (uint i = 0; i < 4; i++) {
         if (pins[i] != NULL) {
-            bool ret = mp_hal_pin_config_alt(pins[i], mode, pull, AF_FN_UART, uart_unit);
+            bool ret = mp_hal_pin_config_alt(pins[i], mode, pull, uart_fn, uart_unit);
             if (!ret) {
                 return false;
             }
@@ -723,18 +725,15 @@ uint32_t uart_get_source_freq(pyb_uart_obj_t *self) {
 
 uint32_t uart_get_baudrate(pyb_uart_obj_t *self) {
     // This formula assumes UART_OVERSAMPLING_16
-    uint32_t baudrate;
+    uint32_t source_freq = uart_get_source_freq(self);
     #if defined(LPUART1)
-    if (self->uart_id == PYB_LPUART_1)
-    #else
-    if (0)
+    if (self->uart_id == PYB_LPUART_1) {
+        return source_freq / (self->uartx->BRR >> 8);
+    } else
     #endif
     {
-        baudrate = uart_get_source_freq(self) / (self->uartx->BRR >> 8);
-    } else {
-        baudrate = uart_get_source_freq(self) / self->uartx->BRR;
+        return source_freq / self->uartx->BRR;
     }
-    return baudrate;
 }
 
 void uart_set_baudrate(pyb_uart_obj_t *self, uint32_t baudrate) {

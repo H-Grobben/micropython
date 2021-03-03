@@ -14,6 +14,7 @@
 #define MICROPY_PY_USSL      (0)
 #define MICROPY_SSL_MBEDTLS  (0)
 #define MICROPY_PY_UASYNCIO  (0)
+#define MICROPY_PY_UBINASCII (0)
 #define MICROPY_PY_UZLIB     (0)
 #define MICROPY_PY_UJSON     (1)
 #define MICROPY_PY_URE       (0)

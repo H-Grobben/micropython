@@ -223,6 +223,11 @@ function ci_stm32_nucleo_build {
     make ${MAKEOPTS} -C ports/stm32 BOARD=NUCLEO_L476RG DEBUG=1
     make ${MAKEOPTS} -C ports/stm32 BOARD=NUCLEO_WB55
     make ${MAKEOPTS} -C ports/stm32/mboot BOARD=NUCLEO_WB55
+    # Test mboot_pack_dfu.py created a valid file, and that its unpack-dfu command works.
+    BOARD_WB55=ports/stm32/boards/NUCLEO_WB55
+    BUILD_WB55=ports/stm32/build-NUCLEO_WB55
+    python3 ports/stm32/mboot/mboot_pack_dfu.py -k $BOARD_WB55/mboot_keys.h unpack-dfu $BUILD_WB55/firmware.pack.dfu $BUILD_WB55/firmware.unpack.dfu
+    diff $BUILD_WB55/firmware.unpack.dfu $BUILD_WB55/firmware.dfu
 }
 
 ########################################################################################
@@ -455,14 +460,14 @@ function ci_windows_build {
 # ports/zephyr
 
 function ci_zephyr_setup {
-    docker pull zephyrprojectrtos/ci:v0.11.8
+    docker pull zephyrprojectrtos/ci:v0.11.13
     docker run --name zephyr-ci -d -it \
       -v "$(pwd)":/micropython \
-      -e ZEPHYR_SDK_INSTALL_DIR=/opt/sdk/zephyr-sdk-0.11.3 \
+      -e ZEPHYR_SDK_INSTALL_DIR=/opt/sdk/zephyr-sdk-0.12.2 \
       -e ZEPHYR_TOOLCHAIN_VARIANT=zephyr \
       -e ZEPHYR_BASE=/zephyrproject/zephyr \
       -w /micropython/ports/zephyr \
-      zephyrprojectrtos/ci:v0.11.8
+      zephyrprojectrtos/ci:v0.11.13
     docker ps -a
 }
 
