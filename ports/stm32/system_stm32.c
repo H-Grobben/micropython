@@ -171,10 +171,10 @@ void SystemClock_Config(void) {
     RCC->DCKCFGR2 = 0;
     #endif
 
-    RCC_ClkInitTypeDef RCC_ClkInitStruct;
-    RCC_OscInitTypeDef RCC_OscInitStruct;
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     #if defined(STM32H7) || defined(STM32G4)
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     #endif
 
     #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)

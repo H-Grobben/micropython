@@ -470,7 +470,7 @@ STATIC mp_int_t compute_ticks_from_dtg(uint32_t dtg) {
 }
 
 STATIC void config_deadtime(pyb_timer_obj_t *self, mp_int_t ticks, mp_int_t brk) {
-    TIM_BreakDeadTimeConfigTypeDef deadTimeConfig;
+    TIM_BreakDeadTimeConfigTypeDef deadTimeConfig = {0};
     deadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
     deadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
     deadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
@@ -805,10 +805,8 @@ STATIC const uint32_t tim_instance_table[MICROPY_HW_MAX_TIMER] = {
     TIM_ENTRY(1, TIM1_UP_TIM10_IRQn),
     #elif defined(STM32H7)
     TIM_ENTRY(1, TIM1_UP_IRQn),
-    #elif defined(STM32L4) || defined(STM32WB)
+    #elif defined(STM32L4) || defined(STM32WB) || defined(STM32G4)
     TIM_ENTRY(1, TIM1_UP_TIM16_IRQn),
-    #elif defined(STM32G4)
-    TIM_ENTRY(1, TIM1_CC_IRQn),
     #endif
     #endif
     TIM_ENTRY(2, TIM2_IRQn),
@@ -838,9 +836,7 @@ STATIC const uint32_t tim_instance_table[MICROPY_HW_MAX_TIMER] = {
     #if defined(TIM8)
     #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
     TIM_ENTRY(8, TIM8_UP_TIM13_IRQn),
-    #elif defined(STM32L4)
-    TIM_ENTRY(8, TIM8_UP_IRQn),
-    #elif defined(STM32G4)
+    #elif defined(STM32L4) || defined(STM32G4)
     TIM_ENTRY(8, TIM8_UP_IRQn),
     #endif
     #endif
@@ -1139,7 +1135,7 @@ STATIC mp_obj_t pyb_timer_channel(size_t n_args, const mp_obj_t *pos_args, mp_ma
 
         case CHANNEL_MODE_PWM_NORMAL:
         case CHANNEL_MODE_PWM_INVERTED: {
-            TIM_OC_InitTypeDef oc_config;
+            TIM_OC_InitTypeDef oc_config = {0};
             oc_config.OCMode = channel_mode_info[chan->mode].oc_mode;
             if (args[4].u_obj != mp_const_none) {
                 // pulse width percent given
@@ -1178,7 +1174,7 @@ STATIC mp_obj_t pyb_timer_channel(size_t n_args, const mp_obj_t *pos_args, mp_ma
         case CHANNEL_MODE_OC_TOGGLE:
         case CHANNEL_MODE_OC_FORCED_ACTIVE:
         case CHANNEL_MODE_OC_FORCED_INACTIVE: {
-            TIM_OC_InitTypeDef oc_config;
+            TIM_OC_InitTypeDef oc_config = {0};
             oc_config.OCMode = channel_mode_info[chan->mode].oc_mode;
             oc_config.Pulse = args[5].u_int;
             oc_config.OCPolarity = args[6].u_int;
@@ -1215,7 +1211,7 @@ STATIC mp_obj_t pyb_timer_channel(size_t n_args, const mp_obj_t *pos_args, mp_ma
         }
 
         case CHANNEL_MODE_IC: {
-            TIM_IC_InitTypeDef ic_config;
+            TIM_IC_InitTypeDef ic_config = {0};
 
             ic_config.ICPolarity = args[6].u_int;
             if (ic_config.ICPolarity == 0xffffffff) {
@@ -1240,7 +1236,7 @@ STATIC mp_obj_t pyb_timer_channel(size_t n_args, const mp_obj_t *pos_args, mp_ma
         case CHANNEL_MODE_ENC_A:
         case CHANNEL_MODE_ENC_B:
         case CHANNEL_MODE_ENC_AB: {
-            TIM_Encoder_InitTypeDef enc_config;
+            TIM_Encoder_InitTypeDef enc_config = {0};
 
             enc_config.EncoderMode = channel_mode_info[chan->mode].oc_mode;
             enc_config.IC1Polarity = args[6].u_int;
